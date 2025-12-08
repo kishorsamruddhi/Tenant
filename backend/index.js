@@ -22,6 +22,10 @@ mongoose
 
 // ROUTES -----------------
 
+app.get("/", (req, res) => {
+  res.json("Root Api of Tenant App")
+});
+
 app.use("/auth", userRoutes);
 app.use("/expenses", protect, ExpensesRoutes);
 app.use("/summary", protect, AiRoutes);
