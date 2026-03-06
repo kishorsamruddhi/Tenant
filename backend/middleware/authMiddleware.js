@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const { verifyAccessToken } = require("../controllers/token-handler");
 
-const JWT_SECRET = process.env.JWT_SECRET;
 
 const protect = (req, res, next) => {
   try {
@@ -20,7 +20,7 @@ const protect = (req, res, next) => {
         .json({ message: "Not authorized, no token provided" });
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = verifyAccessToken(token);
 
     const user = decoded?.user;
 

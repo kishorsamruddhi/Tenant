@@ -13,7 +13,7 @@ const {
 // REGISTER USER ---------
 
 const COOKIES_REFRESH_TOKEN_OPTIONS = {
-  maxAge: 1 * 1000 * 60 * 60 * 24 * 7, 
+  maxAge: 1 * 1000 * 60 * 60 * 24 * 7,
   httpOnly: true,
   secure: true,
   path: "/auth/refresh",
@@ -41,7 +41,7 @@ const registerUser = async (req, res) => {
       const { _id, name, email } = user;
       const data = { _id, name, email };
 
-      const refreshToken = generateRefreshToken(user._id);
+      const refreshToken = generateRefreshToken("id-" + user._id);
 
       user.refreshToken = refreshToken;
       await user.save();
@@ -88,7 +88,7 @@ const loginUser = async (req, res) => {
       const { _id, name, email } = user;
       const data = { _id, name, email };
 
-      const refreshToken = generateRefreshToken(user._id);
+      const refreshToken = generateRefreshToken("id-" + user._id);
 
       user.refreshToken = refreshToken;
       await user.save();
@@ -119,9 +119,9 @@ const refresh = async (req, res) => {
     if (!refreshToken) throw new Error("refreshToken not found in payload");
 
     const isJWTRefreshTokenValid = verifyRefreshToken(refreshToken);
-
+    const userId = isJWTRefreshTokenValid.userId.replace("id-", "");
     const user = await User.findOne(
-      { _id: isJWTRefreshTokenValid.userId },
+      { _id: userId },
       { _id: 1, name: 1, email: 1, refreshToken: 1 },
     );
     if (!user) throw new Error("User not found");
@@ -131,7 +131,7 @@ const refresh = async (req, res) => {
     }
 
     const { _id, name, email } = user;
-    const newRefreshToken = generateRefreshToken(user._id);
+    const newRefreshToken = generateRefreshToken("id-" + user._id);
     const newAccessToken = generateAccessToken({ _id, name, email });
     user.refreshToken = newRefreshToken;
     await user.save();
