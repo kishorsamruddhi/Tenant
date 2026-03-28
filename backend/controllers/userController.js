@@ -125,7 +125,7 @@ const refresh = async (req, res) => {
       { _id: 1, name: 1, email: 1, refreshToken: 1 },
     );
     if (!user) throw new Error("User not found");
-
+console.log(user);
     if (refreshToken !== user.refreshToken) {
       throw new Error("Refresh Token is not vaild.");
     }
